@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, IdBaseComponent, IdComponent, IdCustomTCPServer, IdCustomHTTPServer,
-  IdHTTPServer, IdContext, ExtCtrls, Menus;
+  IdHTTPServer, IdContext, ExtCtrls, Menus, DB, ZAbstractRODataset, ZDataset,
+  ZAbstractConnection, ZConnection;
 
 type
   TForm1 = class(TForm)
@@ -14,6 +15,8 @@ type
     pm1: TPopupMenu;
     N1: TMenuItem;
     tmr1: TTimer;
+    con1: TZConnection;
+    ZQuery1: TZReadOnlyQuery;
     procedure idhtpsrvr1CommandGet(AContext: TIdContext;
       ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo);
     procedure FormCreate(Sender: TObject);
@@ -30,7 +33,7 @@ var
   Form1: TForm1;
 
 implementation
-
+  uses cusettings;
 {$R *.dfm}
 
 procedure TForm1.FormCreate(Sender: TObject);
