@@ -55,8 +55,28 @@ object Form1: TForm1
   end
   object ZQuery1: TZReadOnlyQuery
     Connection = con1
-    Params = <>
+    SQL.Strings = (
+      
+        'Select f.PUID, v.PWNT_PATH_NAME || '#39'\'#39' || f.PSD_PATH_NAME || '#39'\'#39 +
+        ' || f.PFILE_NAME as FILE_PATH,  f.PORIGINAL_FILE_NAME'
+      'From infodba.PIMANFILE f'
+      'inner join infodba.PIMANVOLUME v on f.RVOLUME_TAGU = v.PUID'
+      'where f.PUID = :param1')
+    Params = <
+      item
+        DataType = ftString
+        Name = 'param1'
+        ParamType = ptInput
+        Value = ''
+      end>
     Left = 48
     Top = 40
+    ParamData = <
+      item
+        DataType = ftString
+        Name = 'param1'
+        ParamType = ptInput
+        Value = ''
+      end>
   end
 end

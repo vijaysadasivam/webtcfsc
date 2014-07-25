@@ -25,12 +25,10 @@ type
     faNetMethod, faNetHost: string;
   private
     procedure SetaUser(const Value: string);
-  private
     procedure SetaBase(const Value: string);
     procedure SetaHost(const Value: string);
     procedure SetaPasw(const Value: string);
     procedure SetaPort(const Value: string);
-  private
     procedure SetaNetHost(const Value: string);
     procedure SetaNetMethod(const Value: string);
     procedure SetaNetPort(const Value: integer);
@@ -39,7 +37,7 @@ type
     constructor Create; override;
 
   public
-   
+
     property aUser: string read FaUser write SetaUser;
     property aPasw:string read FaPasw write SetaPasw;
     property aHost: string read FaHost write SetaHost;
@@ -51,12 +49,6 @@ type
     property aNetMethod:string read FaNetMethod write SetaNetMethod;
 
     destructor Destroy; override;
-  private
-  published
-  published
-  published
-
-  public
     procedure Init;
     function ConnectToDb(aCon: TZConnection; const aHost, aPort, aDbName, aUserName,
       aPasw:string):string;
@@ -131,6 +123,7 @@ begin
   faNetPort := ini1.ReadInteger(cnet_section,cnet_port, 8080);
   faNetMethod := ini1.ReadString(cnet_section,cnet_method,'get');
   faNetHost := ini1.ReadString(cnet_section,cnet_host,'127.0.0.1');
+
   FreeAndNil(ini1);
 end;
 

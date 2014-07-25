@@ -37,9 +37,17 @@ implementation
 {$R *.dfm}
 
 procedure TForm1.FormCreate(Sender: TObject);
+  var
+    s:string;
 begin
-  idhtpsrvr1.Active := True;
- 
+  Settings.LoadSettings;
+  s := Settings.ConnectToDb(con1,Settings.aHost,Settings.aPort, Settings.aBase,
+    Settings.aUser, Settings.aPasw);
+  if s='' then
+    idhtpsrvr1.Active := True
+   else
+    ShowMessage(s);
+
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
@@ -49,20 +57,36 @@ end;
 
 procedure TForm1.idhtpsrvr1CommandGet(AContext: TIdContext;
   ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo);
+  var s:string;
 begin
-  AResponseInfo.ResponseNo := 200;
-  AResponseInfo.ContentStream := TFileStream.Create ('d:\install.res.1031.dll',
-    fmShareDenyNone);
-  AResponseInfo.ContentType := idhtpsrvr1.MIMETable.GetFileMIMEType(
-    'd:\install.res.1031.dll');
-  AResponseInfo.Date:=Now;
-  AResponseInfo.Expires:=Now;
-  AResponseInfo.LastModified:=Now;
-  AResponseInfo.CustomHeaders.Clear;
-  ShowMessage(ARequestInfo.Params.Text);
-  AResponseInfo.CustomHeaders.Values['Content-Disposition'] := 'filename=la-la.dll';
-
-
+  ZQuery1.Close;
+  ZQuery1.Params[0].AsString := ARequestInfo.Params.Values['file'];
+  ZQuery1.Open;
+  if ZQuery1.IsEmpty then
+    AResponseInfo.ResponseNo := 404
+  else
+    begin
+      s := ZQuery1.Fields[1].AsString;
+      if FileExists(s) then
+        begin
+          try
+          AResponseInfo.ResponseNo := 200;
+          AResponseInfo.ContentStream := TFileStream.Create (s, fmShareDenyNone);
+          AResponseInfo.ContentType := idhtpsrvr1.MIMETable.GetFileMIMEType(s);
+          AResponseInfo.Date:=Now;
+          AResponseInfo.Expires:=Now;
+          AResponseInfo.LastModified:=Now;
+          AResponseInfo.CustomHeaders.Clear;
+          AResponseInfo.CustomHeaders.Values['Content-Disposition'] :=
+            ZQuery1.Fields[2].AsString
+          except
+            AResponseInfo.ResponseNo := 404
+          end;
+        end
+      else
+        AResponseInfo.ResponseNo := 404
+    end;
+  ZQuery1.Close;
 end;
 
 procedure TForm1.N1Click(Sender: TObject);
